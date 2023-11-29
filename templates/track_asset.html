@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Track Asset{% endblock %}
+
+{% block content %}
+<h1>Track Asset</h1>
+
+<form method="post" action="{{ url_for('track_asset') }}">
+    <label for="search_term">Enter Asset Name or ID:</label>
+    <input type="text" name="search_term" required>
+    <input type="submit" value="Track">
+</form>
+
+{% if error_message %}
+<p style="color: red;">{{ error_message }}</p>
+{% endif %}
+
+{% if asset %}
+
+    <h2>Asset Information</h2>
+    <p><strong>ID:</strong> {{ asset.id }}</p>
+    <p><strong>Name:</strong> {{ asset.name }}</p>
+    <p><strong>Description:</strong> {{ asset.description }}</p>
+    <p><strong>Latitude:</strong> {{ asset.latitude }}</p>
+    <p><strong>Longitude:</strong> {{ asset.longitude }}</p>
+    <p><strong>Owner:</strong> {{ asset.owner }}</p>
+    <p><strong>Purchase Date:</strong> {{ asset.purchase_date }}</p>
+
+
+<!-- Modern Map Container -->
+<div id="map" style="height: 400px;"></div>
+
+<!-- Leaflet and Haversine JavaScript -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Haversine formula to calculate distance between two points on the Earth
+    function haversine(lat1, lon1, lat2, lon2) {
+        // Radius of the Earth in kilometers
+        const R = 6371;
+
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        return distance;
+    }
+
+    var map = L.map('map').setView([{{ asset.latitude }}, { { asset.longitude } }], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([{{ asset.latitude }}, {{ asset.longitude }}]).addTo(map)
+        .bindPopup("Asset: {{ asset.name }}<br>Owner: {{ asset.owner }}").openPopup();
+
+    // Calculate distance form
+    var distanceForm = L.control({ position: 'bottomright' });
+    distanceForm.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML = `
+                    <h2>Calculate Distance</h2>
+                    <label for="current_lat">Current Latitude:</label>
+                    <input type="text" id="current_lat" name="current_lat" required><br>
+                    
+                    <label for="current_lon">Current Longitude:</label>
+                    <input type="text" id="current_lon" name="current_lon" required><br>
+                    
+                    <button onclick="calculateDistance()">Calculate Distance</button>
+                `;
+        return div;
+    };
+    distanceForm.addTo(map);
+
+    function calculateDistance() {
+        var currentLat = parseFloat(document.getElementById('current_lat').value);
+        var currentLon = parseFloat(document.getElementById('current_lon').value);
+
+        if (isNaN(currentLat) || isNaN(currentLon)) {
+            alert('Please enter valid latitude and longitude values');
+            return;
+        }
+
+        var distance = haversine(
+            currentLat, currentLon,
+            {{ asset.latitude }}, { { asset.longitude } }
+                );
+
+    alert('Distance between Current Location and Asset Location: ' + distance.toFixed(2) + ' km');
+            }
+</script>
+{% endif %}
+{% endblock %}

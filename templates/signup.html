@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<h1>Sign In</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<h4 class="mt-1 mb-5 pb-1">SignUp</h4>
+                  </div>
+
+                  <form method="POST" action="{{ url_for('signup') }}">
+                    <p>Please create your account</p>
+                    <div class="form-outline mb-4">
+                      <label for="username">Username</label>
+                      <input
+                        type="text"
+                        name="username"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <label for="email">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <label for="password">Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div class="text-center pt-1 mb-0 pb-1">
+                      <button type="submit" class="btn btn-primary">
+                        SignUp
+                      </button>
+                    </div>
+
+                    <div
+                      class="d-flex align-items-center justify-content-center pb-4"
+                    >
+                      <p class="mb-0 me-1">Have an account?</p>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        onclick="window.location.href='{{ url_for('login') }}'"
+                      >
+                        Login
+                      </button>
+                    </div>
+                  </form>
+                </div>
+            </div>
+                  
+{% endblock %}

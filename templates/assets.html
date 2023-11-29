@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Show Available Asset{% endblock %}
+
+{% block content %}
+    <h1>Asset List</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Owner</th>
+                <th>Purchase Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.latitude }}</td>
+                <td>{{ asset.longitude }}</td>
+                <td>{{ asset.owner }}</td>
+                <td>{{ asset.purchase_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

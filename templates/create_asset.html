@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Asset{% endblock %}
+
+{% block content %}
+    <h1>Create Asset</h1>
+
+    <form method="post" action="{{ url_for('create_asset') }}">
+        <label for="name">Name:</label>
+        <input type="text" name="name" required><br>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea><br>
+
+        <label for="latitude">Latitude:</label>
+        <input type="text" name="latitude" id="latitude" required><br>
+
+        <label for="longitude">Longitude:</label>
+        <input type="text" name="longitude" id="longitude" required><br>
+
+        <label for="owner">Owner:</label>
+        <input type="text" name="owner" required><br>
+
+        <label for="purchase_date">Purchase Date:</label>
+        <input type="date" name="purchase_date" required><br>
+
+        <button type="button" onclick="getCurrentLocation()">Get Current Location</button><br>
+
+        <input type="submit" value="Create Asset">
+    </form>
+
+    <script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+        }
+    </script>
+{% endblock %}
